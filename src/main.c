@@ -1,26 +1,88 @@
-#include "FreeRTOS.h"
-#include "task.h"
+// #include "FreeRTOS.h"
+// #include "task.h"
+// #include "pico/stdlib.h"
+// #include "pico/cyw43_arch.h"
+
+// void vBlinkTask(void *pvParameters) {
+//     while (1) {
+//         cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+//         vTaskDelay(pdMS_TO_TICKS(500));
+//         cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
+//         vTaskDelay(pdMS_TO_TICKS(500));
+//     }
+// }
+
+// int main(void) {
+//     stdio_init_all();
+    
+//     if (cyw43_arch_init()) {
+//         return -1;  // Init failed
+//     }
+    
+//     xTaskCreate(vBlinkTask, "Blink", 256, NULL, 1, NULL);
+//     vTaskStartScheduler();
+    
+//     while (1);
+// }
+
+
+
+
+
+
+
+
+
+
+// This program turns the led off and onn, also pushes the updated value of led to a queue. (Thread 1)
+// The value is then read by other thread and then printed on the serial monitor. (Thread 2)
+#include<stdio.h>
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
 
-void vBlinkTask(void *pvParameters) {
-    while (1) {
-        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-        vTaskDelay(pdMS_TO_TICKS(500));
-        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-        vTaskDelay(pdMS_TO_TICKS(500));
+static QueueHandle_t queue = NULL;
+
+void led_task(void * pvParameters) // inverts led and sends data to queue (every 2 sec)
+{
+    cyw43_arch_init();
+    uint led_state = 1;
+
+    while(true)
+    {
+        led_state = !led_state;
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN , led_state);
+        xQueueSend(queue , &led_state , 0);
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 
-int main(void) {
-    stdio_init_all();
+void print_led_state(void * pvParameters) // reads led state out of queue every 2 sec
+{
+    uint led_state = 0;
     
-    if (cyw43_arch_init()) {
-        return -1;  // Init failed
+    while(true)
+    {
+        xQueueReceive(queue, &led_state , portMAX_DELAY); // portMAX_DELAY : waits for resource to be avaliable in the queue
+        printf("LED state : %d\n" , led_state);
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
+}
+
+int main()
+{
+    stdio_init_all();
+
+    printf("PROCESS STARTED\n");
+
+    queue = xQueueCreate(1, sizeof(uint));
+
+    xTaskCreate(led_task , "LED_TASK" , 256 , NULL , 1 , NULL);
+    xTaskCreate(print_led_state, "READ_LED" , 256 , NULL , 1 , NULL);
     
-    xTaskCreate(vBlinkTask, "Blink", 256, NULL, 1, NULL);
     vTaskStartScheduler();
-    
-    while (1);
+
+    return 0;
 }
