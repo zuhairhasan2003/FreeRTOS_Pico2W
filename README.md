@@ -1,0 +1,1 @@
+Just me learning FreeRTOS with my Raspberry Pi Pico 2w

@@ -1,7 +1,0 @@
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/pioasm.dir
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/edit_cache.dir
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/rebuild_cache.dir
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/list_install_components.dir
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/install.dir
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/install/local.dir
-C:/Users/zhasanr/Desktop/your_project/build/pioasm/CMakeFiles/install/strip.dir
