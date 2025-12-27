@@ -1,14 +1,14 @@
 # ninja log v7
-104	1581	7884236773148781	CMakeFiles/pioasm.dir/hex_output.cpp.obj	5cc29550f07a00c5
-124	1713	7884236773334906	CMakeFiles/pioasm.dir/json_output.cpp.obj	1175a83f69213f3d
-136	1919	7884236773447789	CMakeFiles/pioasm.dir/ada_output.cpp.obj	aee94ca794cc5ec
-76	2015	7884236772847172	CMakeFiles/pioasm.dir/c_sdk_output.cpp.obj	49d6bb47a91abf51
-151	2023	7884236773616622	CMakeFiles/pioasm.dir/go_output.cpp.obj	4be81fdf2143ceb6
-7	2338	7884236772171819	CMakeFiles/pioasm.dir/main.cpp.obj	1f645a54f6196c6e
-39	2522	7884236772494260	CMakeFiles/pioasm.dir/pio_disassembler.cpp.obj	180185cd3af00b1
-50	2992	7884236772612459	CMakeFiles/pioasm.dir/gen/lexer.cpp.obj	1c0ae3949c577d5d
-91	3131	7884236773009831	CMakeFiles/pioasm.dir/python_output.cpp.obj	3504d0e76521251e
-29	10533	7884236772387584	CMakeFiles/pioasm.dir/pio_assembler.cpp.obj	da3ef1505560e13e
-63	10724	7884236772729845	CMakeFiles/pioasm.dir/gen/parser.cpp.obj	c5c4ecd2b0cfdac1
-10724	12707	7884236879346230	pioasm.exe	1f743638aa240fce
-27	551	7884236908017637	CMakeFiles/install.util	aae71055b474856d
+151	2140	7885104579143060	CMakeFiles/pioasm.dir/hex_output.cpp.obj	5cc29550f07a00c5
+109	3075	7885104578715792	CMakeFiles/pioasm.dir/c_sdk_output.cpp.obj	49d6bb47a91abf51
+189	3164	7885104579528929	CMakeFiles/pioasm.dir/ada_output.cpp.obj	aee94ca794cc5ec
+169	3280	7885104579322946	CMakeFiles/pioasm.dir/json_output.cpp.obj	1175a83f69213f3d
+209	3309	7885104579730786	CMakeFiles/pioasm.dir/go_output.cpp.obj	4be81fdf2143ceb6
+52	3495	7885104578156420	CMakeFiles/pioasm.dir/pio_disassembler.cpp.obj	180185cd3af00b1
+7	3922	7885104577647659	CMakeFiles/pioasm.dir/main.cpp.obj	1f645a54f6196c6e
+70	4737	7885104578330463	CMakeFiles/pioasm.dir/gen/lexer.cpp.obj	1c0ae3949c577d5d
+130	5886	7885104578922059	CMakeFiles/pioasm.dir/python_output.cpp.obj	3504d0e76521251e
+35	15581	7885104577914254	CMakeFiles/pioasm.dir/pio_assembler.cpp.obj	da3ef1505560e13e
+85	17449	7885104578481358	CMakeFiles/pioasm.dir/gen/parser.cpp.obj	c5c4ecd2b0cfdac1
+17450	21243	7885104752132076	pioasm.exe	1f743638aa240fce
+51	563	7885104801173360	CMakeFiles/install.util	aae71055b474856d
