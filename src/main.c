@@ -120,26 +120,115 @@
 // Ready : Task ready to be scheduled
 // Blocked : Task waiting for external resource / event. vTaskDelay() blocks task for specefied cpu ticks.
 // Suspended : Task in the suspended state can not go to running / ready state. But they are also not waiting for a event. To wake them up you have to use vTaskResume() and to suspend them you have to use vTaskSuspend()
-#include<stdio.h>
-#include"FreeRTOS.h"
-#include"task.h"
-#include"pico/stdlib.h"
+// #include<stdio.h>
+// #include"FreeRTOS.h"
+// #include"task.h"
+// #include"pico/stdlib.h"
 
-void task1(void * pvParameters) // this task should not run as task2 is higher priority and is not being blocked. (in case if we are just using 1 cpu out of 2)
+// void task1(void * pvParameters) // this task should not run as task2 is higher priority and is not being blocked. (in case if we are just using 1 cpu out of 2)
+// {
+//     while(true)
+//     {
+//         printf("Task 1\n");
+//         vTaskDelay(pdMS_TO_TICKS(1000));
+//     }
+// }
+
+// void task2(void * pvParameters)
+// {
+//     while(true)
+//     {
+//         printf("Task 2\n");
+//         for(int i = 0 ; i < 15000000  ; i++){} // non blocking waiting
+//     }
+// }
+
+// int main()
+// {
+//     stdio_init_all();
+
+//     xTaskCreate(task1, "task1", 256, NULL, 1, NULL);
+//     xTaskCreate(task2, "task2", 256, NULL, 2, NULL);
+//     vTaskStartScheduler();
+
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// This example focuses on mutex, which prvodes mutual exclusion and helps reducing race conditions on shared resources
+// xSemaphoreTake(mutex, 0) -> tries to acquire the mutex and if not found then continues without delay (0 delay). Inplace of 0 if you use "portMAX_DELAY" the task will be sent to blocked state until mutex is released and then as soon as mutex is released the tasks acquires it automatically
+#include <stdio.h>
+#include <pico/stdlib.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+
+static SemaphoreHandle_t mutex;
+
+void task1(void * pvParameters)
 {
-    while(true)
+    char print = '1';
+    while (true)
     {
-        printf("Task 1\n");
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        if(xSemaphoreTake(mutex, 0) == pdTRUE)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                printf("%c", print);
+            }
+            printf("\n");
+            xSemaphoreGive(mutex);
+        }
     }
 }
 
 void task2(void * pvParameters)
 {
-    while(true)
+    char print = '2';
+    while (true)
     {
-        printf("Task 2\n");
-        for(int i = 0 ; i < 15000000  ; i++){} // non blocking waiting
+        if(xSemaphoreTake(mutex, 0) == pdTRUE)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                printf("%c", print);
+            }
+            printf("\n");
+            xSemaphoreGive(mutex);
+        }
     }
 }
 
@@ -147,8 +236,11 @@ int main()
 {
     stdio_init_all();
 
-    xTaskCreate(task1, "task1", 256, NULL, 1, NULL);
-    xTaskCreate(task2, "task2", 256, NULL, 2, NULL);
+    mutex = xSemaphoreCreateMutex();
+
+    xTaskCreate(task1, "Task 1", 256, NULL, 1, NULL);
+    xTaskCreate(task2, "Task 2", 256, NULL, 1, NULL);
+
     vTaskStartScheduler();
 
     return 0;
