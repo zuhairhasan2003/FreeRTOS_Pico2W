@@ -190,46 +190,133 @@
 
 // This example focuses on mutex, which prvodes mutual exclusion and helps reducing race conditions on shared resources
 // xSemaphoreTake(mutex, 0) -> tries to acquire the mutex and if not found then continues without delay (0 delay). Inplace of 0 if you use "portMAX_DELAY" the task will be sent to blocked state until mutex is released and then as soon as mutex is released the tasks acquires it automatically
-#include <stdio.h>
-#include <pico/stdlib.h>
+// Expected output : 111
+//                   222
+//                   222
+//                   111
+// #include <stdio.h>
+// #include <pico/stdlib.h>
+// #include "FreeRTOS.h"
+// #include "task.h"
+// #include "semphr.h"
+
+// static SemaphoreHandle_t mutex;
+
+// void task1(void * pvParameters)
+// {
+//     char print = '1';
+//     while (true)
+//     {
+//         if(xSemaphoreTake(mutex, 0) == pdTRUE)
+//         {
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 printf("%c", print);
+//             }
+//             printf("\n");
+//             xSemaphoreGive(mutex);
+//         }
+//     }
+// }
+
+// void task2(void * pvParameters)
+// {
+//     char print = '2';
+//     while (true)
+//     {
+//         if(xSemaphoreTake(mutex, 0) == pdTRUE)
+//         {
+//             for (int i = 0; i < 3; i++)
+//             {
+//                 printf("%c", print);
+//             }
+//             printf("\n");
+//             xSemaphoreGive(mutex);
+//         }
+//     }
+// }
+
+// int main()
+// {
+//     stdio_init_all();
+
+//     mutex = xSemaphoreCreateMutex();
+
+//     xTaskCreate(task1, "Task 1", 256, NULL, 1, NULL);
+//     xTaskCreate(task2, "Task 2", 256, NULL, 1, NULL);
+
+//     vTaskStartScheduler();
+
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// This code demonstrates SMP (Symmetric Multiprocessing) with freeRtos
+// SMP means using more then 1 cores, and concurrency
+// vTaskCoreAffinitySet(task, core) this func pins task to a specefied core
+// You can also enable/disable preemption for a specefic tasks using vTaskPreemptionEnable() and vTaskPreemptionDisable()
+// Expected output: Task 1 running on core : 0
+//                  Task 2 running on core : 1
 #include "FreeRTOS.h"
-#include "task.h"
+#include "pico/stdlib.h"
+#include <stdio.h>
+#include "pico/multicore.h"
 #include "semphr.h"
+#include "task.h"
 
 static SemaphoreHandle_t mutex;
+TaskHandle_t task1_handle;
+TaskHandle_t task2_handle;
 
-void task1(void * pvParameters)
+void print(uint taskNum) // making sure that 1 printf is done at a time on serial monitor
 {
-    char print = '1';
+    xSemaphoreTake(mutex , portMAX_DELAY);
+    printf("Task %d running on core : %d\n", taskNum, get_core_num());
+    xSemaphoreGive(mutex);
+}    
+
+void task1 (void * pvParameters)
+{
     while (true)
     {
-        if(xSemaphoreTake(mutex, 0) == pdTRUE)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                printf("%c", print);
-            }
-            printf("\n");
-            xSemaphoreGive(mutex);
-        }
-    }
-}
+        print(1);
+        vTaskDelay(1000);
+    }    
+}    
 
-void task2(void * pvParameters)
+void task2 (void * pvParameters)
 {
-    char print = '2';
     while (true)
     {
-        if(xSemaphoreTake(mutex, 0) == pdTRUE)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                printf("%c", print);
-            }
-            printf("\n");
-            xSemaphoreGive(mutex);
-        }
-    }
+        print(2);
+        vTaskDelay(1000);
+    }    
 }
 
 int main()
@@ -238,9 +325,12 @@ int main()
 
     mutex = xSemaphoreCreateMutex();
 
-    xTaskCreate(task1, "Task 1", 256, NULL, 1, NULL);
-    xTaskCreate(task2, "Task 2", 256, NULL, 1, NULL);
+    xTaskCreate(task1, "Task 1", 256, NULL, 1, &task1_handle);    
+    xTaskCreate(task2, "Task 2", 256, NULL, 1, &task2_handle);   
 
+    vTaskCoreAffinitySet(task1_handle, (1 << 0));
+    vTaskCoreAffinitySet(task2_handle, (1 << 1));
+    
     vTaskStartScheduler();
 
     return 0;

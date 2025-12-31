@@ -1,0 +1,21 @@
+# ninja log v7
+2	145	7888765804752122	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-mkdir	c2fbda0708be1f43
+2	145	7888765804752122	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-mkdir	c2fbda0708be1f43
+163	3979	7888765843084510	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-download	e83faf4634115ae
+163	3979	7888765843084510	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-download	e83faf4634115ae
+3979	4342	7888765843209037	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-update	f57ee1080008a7be
+3979	4342	7888765843209037	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-update	f57ee1080008a7be
+4342	4486	7888765848181323	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-patch	8cbb270e2361e76b
+4342	4486	7888765848181323	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-patch	8cbb270e2361e76b
+4487	4628	7888765849583400	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-configure	91c9416c723ab8ee
+4487	4628	7888765849583400	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-configure	91c9416c723ab8ee
+4628	4787	7888765851143880	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-build	d08aaa298614b2ae
+4628	4787	7888765851143880	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-build	d08aaa298614b2ae
+4788	4919	7888765852480777	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-install	b43cffdd959e8cbc
+4788	4919	7888765852480777	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-install	b43cffdd959e8cbc
+4919	5063	7888765853952323	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-test	f0f87dd88efc8d7f
+4919	5063	7888765853952323	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-test	f0f87dd88efc8d7f
+5063	5258	7888765855884174	CMakeFiles/picotool-populate-complete	325d56c90ad74608
+5063	5258	7888765855884174	picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-done	325d56c90ad74608
+5063	5258	7888765855884174	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/CMakeFiles/picotool-populate-complete	325d56c90ad74608
+5063	5258	7888765855884174	C:/Users/zhasanr/Desktop/your_project/build/_deps/picotool-subbuild/picotool-populate-prefix/src/picotool-populate-stamp/picotool-populate-done	325d56c90ad74608

@@ -32,8 +32,8 @@ target_include_directories(your_app PRIVATE
 # Link with Pico SDK libraries
 target_link_libraries(your_app
     FreeRTOS-Kernel-Heap4
-    pico_cyw43_arch_none
     pico_stdlib
+    pico_multicore
 )
 
 # Enable USB stdio if needed
