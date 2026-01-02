@@ -283,55 +283,196 @@
 // You can also enable/disable preemption for a specefic tasks using vTaskPreemptionEnable() and vTaskPreemptionDisable()
 // Expected output: Task 1 running on core : 0
 //                  Task 2 running on core : 1
-#include "FreeRTOS.h"
-#include "pico/stdlib.h"
+// #include "FreeRTOS.h"
+// #include "pico/stdlib.h"
+// #include <stdio.h>
+// #include "pico/multicore.h"
+// #include "semphr.h"
+// #include "task.h"
+
+// static SemaphoreHandle_t mutex;
+// TaskHandle_t task1_handle;
+// TaskHandle_t task2_handle;
+
+// void print(uint taskNum) // making sure that 1 printf is done at a time on serial monitor
+// {
+//     xSemaphoreTake(mutex , portMAX_DELAY);
+//     printf("Task %d running on core : %d\n", taskNum, get_core_num());
+//     xSemaphoreGive(mutex);
+// }    
+
+// void task1 (void * pvParameters)
+// {
+//     while (true)
+//     {
+//         print(1);
+//         vTaskDelay(1000);
+//     }    
+// }    
+
+// void task2 (void * pvParameters)
+// {
+//     while (true)
+//     {
+//         print(2);
+//         vTaskDelay(1000);
+//     }    
+// }
+
+// int main()
+// {
+//     stdio_init_all();
+
+//     mutex = xSemaphoreCreateMutex();
+
+//     xTaskCreate(task1, "Task 1", 256, NULL, 1, &task1_handle);    
+//     xTaskCreate(task2, "Task 2", 256, NULL, 1, &task2_handle);   
+
+//     vTaskCoreAffinitySet(task1_handle, (1 << 0));
+//     vTaskCoreAffinitySet(task2_handle, (1 << 1));
+    
+//     vTaskStartScheduler();
+
+//     return 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// This prog demonstrates the use of semaphores to solve the Producer Consumer problem
+// This works when there is exactly 1 producer and 1 consumer, if there are multiple then we have to use additional mutex to access circular_buffer->ptr, start and end
+// Producer produces at lower speend and consumer consumes faster
+// I used counting semaphore to signal consumer when there is a item produced
 #include <stdio.h>
-#include "pico/multicore.h"
-#include "semphr.h"
+#include "pico/stdlib.h"
+#include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
 
-static SemaphoreHandle_t mutex;
-TaskHandle_t task1_handle;
-TaskHandle_t task2_handle;
-
-void print(uint taskNum) // making sure that 1 printf is done at a time on serial monitor
+struct circular_buffer
 {
-    xSemaphoreTake(mutex , portMAX_DELAY);
-    printf("Task %d running on core : %d\n", taskNum, get_core_num());
-    xSemaphoreGive(mutex);
-}    
+    int * ptr;
+    int size;
+    int start;
+    int end;
+};
 
-void task1 (void * pvParameters)
+static struct circular_buffer * buff;
+static SemaphoreHandle_t empty;
+static SemaphoreHandle_t full;
+
+void init(struct circular_buffer * buff, int size)
+{
+    buff->size = size;
+    buff->ptr = pvPortCalloc(buff->size, sizeof(int));
+    buff->start = 0;
+    buff->end = 0;
+}
+
+void print(struct circular_buffer * buff)
+{
+    printf("Buffer Status: \n");
+    for (int i = 0; i < buff->size ; i++)
+    {
+        printf("%d    ", buff->ptr[i]);
+    }
+    printf("\n\n");
+}
+
+void my_insert(struct circular_buffer * buff, int toInsert)
+{
+    xSemaphoreTake(empty, portMAX_DELAY);
+    
+    buff->ptr[buff->start] = toInsert;
+    buff->start = (buff->start + 1) % buff->size;
+
+    printf("Inserted\n");
+    print(buff);
+    
+    xSemaphoreGive(full);
+}
+
+void my_remove(struct circular_buffer * buff)
+{
+    xSemaphoreTake(full, portMAX_DELAY);
+    
+    buff->ptr[buff->end] = 0;
+    buff->end = ((buff->end + 1) % buff->size);
+
+    printf("Removed\n");
+    print(buff);
+    
+    xSemaphoreGive(empty);
+}
+
+void Producer(void * pvParameters)
+{
+    int i = 1;
+    while (true)
+    {
+        my_insert(buff , i);
+        i ++;
+        
+        if (i >= 1000)
+            i = 1;
+
+        vTaskDelay(1000);
+    }
+}
+
+void Consumer(void * pvParameters)
 {
     while (true)
     {
-        print(1);
-        vTaskDelay(1000);
-    }    
-}    
+        my_remove(buff);
 
-void task2 (void * pvParameters)
-{
-    while (true)
-    {
-        print(2);
-        vTaskDelay(1000);
-    }    
+        vTaskDelay(200);
+    }
 }
 
 int main()
 {
     stdio_init_all();
 
-    mutex = xSemaphoreCreateMutex();
+    int size =3;
 
-    xTaskCreate(task1, "Task 1", 256, NULL, 1, &task1_handle);    
-    xTaskCreate(task2, "Task 2", 256, NULL, 1, &task2_handle);   
+    buff = pvPortCalloc(1, sizeof(struct circular_buffer));
+    init(buff, size);
 
-    vTaskCoreAffinitySet(task1_handle, (1 << 0));
-    vTaskCoreAffinitySet(task2_handle, (1 << 1));
-    
+    empty = xSemaphoreCreateCounting(size , size); // 3 empty index
+    full = xSemaphoreCreateCounting(size , 0); // 0 full index
+
+    xTaskCreate(Producer, "Producer 1", 256, NULL, 1, NULL);
+    xTaskCreate(Consumer, "Consumer 1", 256, NULL, 1, NULL);
+
     vTaskStartScheduler();
+
+    vPortFree(buff->ptr);
+    vPortFree(buff);
 
     return 0;
 }
